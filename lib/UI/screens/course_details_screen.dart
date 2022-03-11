@@ -165,10 +165,16 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) => SessionScreen(
-                                                  courseID: widget.id,
-                                                  sessionID: courseModel!
-                                                      .sessions![index].id,
+                                            builder: (_) => BlocProvider(
+                                                  create: (context) =>
+                                                      CoursesCubit(),
+                                                  child: SessionScreen(
+                                                    courseID:
+                                                        widget.id.toString(),
+                                                    sessionID: courseModel!
+                                                        .sessions![index].id
+                                                        .toString(),
+                                                  ),
                                                 )));
                                   }
                                 },

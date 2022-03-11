@@ -32,4 +32,18 @@ class OneCourseError extends CoursesState {
 
   OneCourseError(this.message);
 }
+class SessionLoading extends CoursesState {}
+
+class SessionLoaded extends CoursesState {
+  final SessionModel sessionModel;
+
+  SessionLoaded(this.sessionModel);
+}
+
+class SessionError extends CoursesState {
+  final String message;
+
+  SessionError(this.message);
+}
+
 

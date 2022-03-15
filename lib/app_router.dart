@@ -5,6 +5,7 @@ import 'package:medical_academy/UI/screens/course_details_screen.dart';
 import 'package:medical_academy/UI/screens/home_screen.dart';
 import 'package:medical_academy/UI/screens/session_screen.dart';
 import 'package:medical_academy/bussiness_logic/courses/courses_cubit.dart';
+import 'package:medical_academy/bussiness_logic/send_request_cubit.dart';
 import 'package:medical_academy/constant/strings.dart';
 
 import 'UI/screens/splash_screen.dart';
@@ -25,8 +26,15 @@ class AppRouter {
       case course:
         final id = settings.arguments;
         return MaterialPageRoute(builder: (_) =>
-            BlocProvider(
-              create: (context) => CoursesCubit(),
+            MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => CoursesCubit(),
+                ),
+                BlocProvider(
+                  create: (context) => SendRequestCubit(),
+                ),
+              ],
               child: CourseDetailsScreen(id: id),
             ));
     }

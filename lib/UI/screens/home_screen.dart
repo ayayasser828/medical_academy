@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
               body: Container(
                 height: height,
                 width: width,
-                decoration: const BoxDecoration(
-                  gradient: buttonGradient,
+                decoration: BoxDecoration(
+                  color: white
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -73,12 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             'HOME',
                             style: GoogleFonts.pacifico(
-                                color: white, fontSize: 25),
+                                color: blue, fontSize: 25),
                           ),
                           IconButton(
                             icon: Icon(
                               Icons.logout,
-                              color: white,
+                              color: blue,
                             ),
                             onPressed: () {
                               prefs.setBool("ISLOGGED", false);

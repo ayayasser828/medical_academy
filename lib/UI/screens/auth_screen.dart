@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
@@ -10,7 +11,6 @@ import '../../constant/colors.dart';
 import '../../constant/strings.dart';
 import '../../constant/style.dart';
 import '../../data/web_service/check_internet_connection.dart';
-import '../widgets/button.dart';
 import '../widgets/loading_indecator.dart';
 import '../widgets/text_button.dart';
 import '../widgets/text_form_filed.dart';
@@ -53,41 +53,30 @@ class _AuthScreenState extends State<AuthScreen> {
         children: [
           Center(
             child: Image.asset(
-              'assets/images/bg3.jpg',
+              'assets/images/login.PNG',
               fit: BoxFit.fill,
               height: height,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(40.0),
+          Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: Text(
-                    "Medical Academy",
-                    style: GoogleFonts.asset(color: blue,fontSize: 30)
-                  ),
+                MyButtonWidget(
+                    btnTxt: 'Login',
+                    btnWidth: width * 0.8,
+                    btnHeight: height * 0.06,
+                    onPressed: () => login(context)),
+                SizedBox(height: height * 0.02),
+                MyButtonWidget(
+                    btnTxt: 'Register',
+                    btnWidth: width * 0.8,
+                    btnHeight: height * 0.06,
+                    onPressed: () => register(context)),
+                SizedBox(
+                  height: height * 0.05,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyButtonWidget(
-                        btnTxt: 'Login',
-                        btnWidth: width * 0.8,
-                        btnHeight: height * 0.06,
-                        onPressed: () => login(context)),
-                    SizedBox(height: height * 0.02),
-                    MyButtonWidget(
-                        btnTxt: 'Register',
-                        btnWidth: width * 0.8,
-                        btnHeight: height * 0.06,
-                        onPressed: () => register(context)),
-                  ],
-                )
               ],
             ),
           )
@@ -127,15 +116,17 @@ class _AuthScreenState extends State<AuthScreen> {
                         Navigator.pushReplacementNamed(context, home);
                       }
                       if (state is LoginError) {
-                        String errorMsg = (state).message;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(errorMsg),
-                            backgroundColor: Colors.black,
-                            duration: const Duration(seconds: 5),
-                          ),
-                        );
-                        // Navigator.pushReplacementNamed(context, signIn);
+                        AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.ERROR,
+                            animType: AnimType.RIGHSLIDE,
+                            headerAnimationLoop: true,
+                            title: 'Error',
+                            desc: 'user name or password is incorrect',
+                            btnOkOnPress: () {},
+                            btnOkIcon: Icons.cancel,
+                            btnOkColor: Colors.red)
+                            .show();
                       }
                     },
                     builder: (context, state) {
@@ -271,6 +262,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   final TextEditingController passwordConfirm = TextEditingController();
 
+  final TextEditingController email = TextEditingController();
+
   final GlobalKey<FormState> _registerFormKey = GlobalKey();
 
   void register(BuildContext context) {
@@ -298,33 +291,41 @@ class _AuthScreenState extends State<AuthScreen> {
                       if (state is LoadingRegister) {
                         showLoadingIndicator();
                       }
-
                       if (state is RegisterSuccess) {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Request sent'),
-                            backgroundColor: blue,
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
+                        AwesomeDialog(
+                            context: context,
+                            animType: AnimType.LEFTSLIDE,
+                            headerAnimationLoop: false,
+                            dialogType: DialogType.SUCCES,
+                            showCloseIcon: true,
+                            title: 'Succes',
+                            desc: 'Your request has been send',
+                            btnOkOnPress: () {
+                              debugPrint('OnClcik');
+                            },
+                            btnOkIcon: Icons.check_circle,
+                            onDissmissCallback: (type) {
+                              debugPrint('Dialog Dissmiss from callback $type');
+                            })
+                            .show();
                       }
-
                       if (state is RegisterError) {
-                        Navigator.pop(context);
-                        String errorMsg = (state).message;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(errorMsg),
-                            backgroundColor: Colors.black,
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
+                        AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.ERROR,
+                            animType: AnimType.RIGHSLIDE,
+                            headerAnimationLoop: true,
+                            title: 'Error',
+                            desc: 'something error please try again',
+                            btnOkOnPress: () {},
+                            btnOkIcon: Icons.cancel,
+                            btnOkColor: Colors.red)
+                            .show();
                       }
                     },
                     builder: (context, state) {
                       return Container(
-                        height: height * 0.7,
+                        height: height * 0.72,
                         color: Colors.transparent,
                         child: Container(
                           height: height,
@@ -337,131 +338,153 @@ class _AuthScreenState extends State<AuthScreen> {
                             padding: const EdgeInsets.all(20.0),
                             child: Form(
                               key: _registerFormKey,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: ListView(
                                 children: [
-                                  SizedBox(
-                                    height: height * 0.01,
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      Text(
+                                        "Send Request to Join",
+                                        style: TextStyle(
+                                          color: blue,
+                                          fontSize: 28,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.02,
+                                      ),
+                                      const Text(
+                                        'Phone Number',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextFormFieldWidget(
+                                          type: TextInputType.name,
+                                          hint: 'Your phone number',
+                                          controller: phoneRegister,
+                                          icon: const Icon(
+                                            Icons.phone_outlined,
+                                            color: Colors.grey,
+                                          )),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      const Text(
+                                        'Name',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextFormFieldWidget(
+                                          type: TextInputType.name,
+                                          hint: 'Name',
+                                          controller: name,
+                                          icon: const Icon(
+                                            Icons.phone_outlined,
+                                            color: Colors.grey,
+                                          )),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      const Text(
+                                        'Email',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextFormFieldWidget(
+                                          type: TextInputType.emailAddress,
+                                          hint: 'Your email',
+                                          controller: email,
+                                          icon: const Icon(
+                                            Icons.email,
+                                            color: Colors.grey,
+                                          )),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      const Text(
+                                        'Password',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextPassFormFieldWidget(
+                                        isPassword:
+                                            BlocProvider.of<GeneralCubit>(context)
+                                                .isPassword,
+                                        controller: passwordRegister,
+                                        type: TextInputType.visiblePassword,
+                                        validation:
+                                            AppValidators.validatePassWord(),
+                                        hint: 'Password',
+                                        suffix: IconButton(
+                                          onPressed: () {
+                                            BlocProvider.of<GeneralCubit>(context)
+                                                .changePasswordVisibility();
+                                          },
+                                          icon:
+                                              BlocProvider.of<GeneralCubit>(context)
+                                                  .suffix,
+                                        ),
+                                        icon: const Icon(
+                                          Icons.lock_outline,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      const Text(
+                                        'Confirm Password',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextPassFormFieldWidget(
+                                        isPassword:
+                                            BlocProvider.of<GeneralCubit>(context)
+                                                .isPassword,
+                                        controller: passwordConfirm,
+                                        type: TextInputType.visiblePassword,
+                                        validation:
+                                            AppValidators.validatePassWord(),
+                                        hint: 'Confirm Password',
+                                        suffix: IconButton(
+                                          onPressed: () {
+                                            BlocProvider.of<GeneralCubit>(context)
+                                                .changePasswordVisibility();
+                                          },
+                                          icon:
+                                              BlocProvider.of<GeneralCubit>(context)
+                                                  .suffix,
+                                        ),
+                                        icon: const Icon(
+                                          Icons.lock_outline,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.02,
+                                      ),
+                                      MyButtonWidget(
+                                          btnTxt: 'Register',
+                                          btnWidth: width,
+                                          btnHeight: height * 0.06,
+                                          onPressed: () =>
+                                              _validateRegister(context)),
+                                    ],
                                   ),
-                                  Text(
-                                    "Send Request to Join",
-                                    style: TextStyle(
-                                      color: blue,
-                                      fontSize: 28,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  const Text(
-                                    'Phone Number',
-                                    style: textFieldName,
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  MyTextFormFieldWidget(
-                                      type: TextInputType.name,
-                                      hint: 'Your phone number',
-                                      controller: phoneRegister,
-                                      icon: const Icon(
-                                        Icons.phone_outlined,
-                                        color: Colors.grey,
-                                      )),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  const Text(
-                                    'Name',
-                                    style: textFieldName,
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  MyTextFormFieldWidget(
-                                      type: TextInputType.name,
-                                      hint: 'Name',
-                                      controller: name,
-                                      icon: const Icon(
-                                        Icons.phone_outlined,
-                                        color: Colors.grey,
-                                      )),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  const Text(
-                                    'Password',
-                                    style: textFieldName,
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  MyTextPassFormFieldWidget(
-                                    isPassword:
-                                        BlocProvider.of<GeneralCubit>(context)
-                                            .isPassword,
-                                    controller: passwordRegister,
-                                    type: TextInputType.visiblePassword,
-                                    validation:
-                                        AppValidators.validatePassWord(),
-                                    hint: 'Password',
-                                    suffix: IconButton(
-                                      onPressed: () {
-                                        BlocProvider.of<GeneralCubit>(context)
-                                            .changePasswordVisibility();
-                                      },
-                                      icon:
-                                          BlocProvider.of<GeneralCubit>(context)
-                                              .suffix,
-                                    ),
-                                    icon: const Icon(
-                                      Icons.lock_outline,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.02,
-                                  ),
-                                  const Text(
-                                    'Confirm Password',
-                                    style: textFieldName,
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  MyTextPassFormFieldWidget(
-                                    isPassword:
-                                        BlocProvider.of<GeneralCubit>(context)
-                                            .isPassword,
-                                    controller: passwordConfirm,
-                                    type: TextInputType.visiblePassword,
-                                    validation:
-                                        AppValidators.validatePassWord(),
-                                    hint: 'Confirm Password',
-                                    suffix: IconButton(
-                                      onPressed: () {
-                                        BlocProvider.of<GeneralCubit>(context)
-                                            .changePasswordVisibility();
-                                      },
-                                      icon:
-                                          BlocProvider.of<GeneralCubit>(context)
-                                              .suffix,
-                                    ),
-                                    icon: const Icon(
-                                      Icons.lock_outline,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.03,
-                                  ),
-                                  MyButtonWidget(
-                                      btnTxt: 'Register',
-                                      btnWidth: width,
-                                      btnHeight: height * 0.06,
-                                      onPressed: () =>
-                                          _validateRegister(context)),
                                 ],
                               ),
                             ),
@@ -488,7 +511,14 @@ class _AuthScreenState extends State<AuthScreen> {
             name.text.toString(),
             phoneRegister.text.toString(),
             passwordRegister.text.toString(),
-            passwordConfirm.text.toString());
+            passwordConfirm.text.toString(),
+            email.text.toString(),
+        );
+        name.clear();
+        passwordRegister.clear();
+        phoneRegister.clear();
+        passwordConfirm.clear();
+        email.clear();
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

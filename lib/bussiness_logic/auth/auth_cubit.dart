@@ -17,13 +17,14 @@ class AuthCubit extends Cubit<AuthState> {
   RegisterSuccessModel registerModel = RegisterSuccessModel();
   RegisterErrorModel registerErrorModel = RegisterErrorModel();
 
-  RegisterSuccessModel? register(String userName, String phone, String pass,String cPass) {
+  RegisterSuccessModel? register(String userName, String phone, String pass,String cPass,String email) {
     DioHelper.postData(url: registerURL, data: {
-      'email': phone.toString(),
+      'name': userName.toString(),
+      'email': email.toString(),
       'password': pass.toString(),
       'device_name': 'postman',
       'password_confirmation': cPass.toString(),
-      'name': userName.toString()
+      'mobile': phone.toString()
     }).then((value) {
       emit(LoadingRegister());
       print("response ${value.data}");

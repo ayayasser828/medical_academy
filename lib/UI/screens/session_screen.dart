@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:medical_academy/data/models/session_model.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vimeo_player_flutter/vimeo_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../bussiness_logic/courses/courses_cubit.dart';
 import '../../constant/colors.dart';
@@ -23,6 +24,7 @@ class SessionScreen extends StatefulWidget {
 
 class _SessionScreenState extends State<SessionScreen> {
   VideoPlayerController? _controller;
+  YoutubePlayerController? controller;
 
   Future<void> secureScreen() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -39,6 +41,24 @@ class _SessionScreenState extends State<SessionScreen> {
       ..initialize().then((_) {
         setState(() {});
       });
+    // controller = YoutubePlayerController(
+    //     initialVideoId: 'FTgkxY1KVf8',
+    //   params: const YoutubePlayerParams(
+    //     loop: false,
+    //     color: 'transparent',
+    //     desktopMode: false,
+    //     strictRelatedVideos: false,
+    //     autoPlay: false,
+    //     privacyEnhanced: true,
+    //     useHybridComposition: false,
+    //     showControls: false,
+    //     enableCaption: false,
+    //     enableKeyboard: false,
+    //     enableJavaScript: false,
+    //     showVideoAnnotations: false,
+    //     playsInline: false,
+    //   )
+    // );
   }
 
   @override
@@ -84,31 +104,53 @@ class _SessionScreenState extends State<SessionScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: (){
-                        setState(() {
-                          _controller!.value.isPlaying
-                              ? _controller!.pause()
-                              : _controller!.play();
-                        });
-                      },
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: _controller!.value.isInitialized
-                                ? AspectRatio(
-                                    aspectRatio: _controller!.value.aspectRatio,
-                                    child: VideoPlayer(_controller!),
-                                  )
-                                : showLoadingIndicator(),
-                          ),
-                          _controller!.value.isPlaying ? Container() : Padding(
-                            padding: const EdgeInsets.only(top: 60.0),
-                            child: Center(child: Icon(Icons.play_arrow,color: white,size: 70,)),
-                          )
-                        ],
-                      ),
+                    SizedBox(
+                      height: height*0.8,
+                      width: width,
+                      child: const VimeoPlayer(videoId: '687761777',),
                     ),
+                    // SizedBox(
+                    //   height: height*0.4,
+                    //   width: width,
+                    //   child: YoutubePlayerControllerProvider(
+                    //     controller: controller!,
+                    //     child: YoutubePlayerIFrame(
+                    //       controller: controller,
+                    //     ),
+                    //   ),
+                    // ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     setState(() {
+                    //       _controller!.value.isPlaying
+                    //           ? _controller!.pause()
+                    //           : _controller!.play();
+                    //     });
+                    //   },
+                    //   child: Stack(
+                    //     children: [
+                    //       Center(
+                    //         child: _controller!.value.isInitialized
+                    //             ? AspectRatio(
+                    //                 aspectRatio: _controller!.value.aspectRatio,
+                    //                 child: VideoPlayer(_controller!),
+                    //               )
+                    //             : showLoadingIndicator(),
+                    //       ),
+                    //       _controller!.value.isPlaying
+                    //           ? Container()
+                    //           : Padding(
+                    //               padding: const EdgeInsets.only(top: 60.0),
+                    //               child: Center(
+                    //                   child: Icon(
+                    //                 Icons.play_arrow,
+                    //                 color: white,
+                    //                 size: 70,
+                    //               )),
+                    //             )
+                    //     ],
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18.0),
                       child: Column(
@@ -121,11 +163,12 @@ class _SessionScreenState extends State<SessionScreen> {
                           RichText(
                             text: TextSpan(
                               text: 'Description : ',
-                              style:
-                              const TextStyle(color: Colors.grey, fontSize: 16),
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 16),
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: sessionModel!.session!.description.toString(),
+                                  text: sessionModel!.session!.description
+                                      .toString(),
                                   style: TextStyle(color: blue, fontSize: 16),
                                 ),
                               ],
@@ -137,11 +180,12 @@ class _SessionScreenState extends State<SessionScreen> {
                           RichText(
                             text: TextSpan(
                               text: 'Created at : ',
-                              style:
-                              const TextStyle(color: Colors.grey, fontSize: 16),
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 16),
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: sessionModel!.session!.createdAt.toString(),
+                                  text: sessionModel!.session!.createdAt
+                                      .toString(),
                                   style: TextStyle(color: blue, fontSize: 16),
                                 ),
                               ],
@@ -153,11 +197,12 @@ class _SessionScreenState extends State<SessionScreen> {
                           RichText(
                             text: TextSpan(
                               text: 'Updated at : ',
-                              style:
-                              const TextStyle(color: Colors.grey, fontSize: 16),
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 16),
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: sessionModel!.session!.updatedAt.toString(),
+                                  text: sessionModel!.session!.updatedAt
+                                      .toString(),
                                   style: TextStyle(color: blue, fontSize: 16),
                                 ),
                               ],

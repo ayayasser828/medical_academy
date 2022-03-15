@@ -1,11 +1,12 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medical_academy/UI/screens/session_screen.dart';
 import 'package:medical_academy/UI/widgets/session_card.dart';
+import 'package:medical_academy/bussiness_logic/send_request_cubit.dart';
 import 'package:medical_academy/constant/colors.dart';
-import 'package:medical_academy/constant/strings.dart';
 import '../../bussiness_logic/courses/courses_cubit.dart';
 import '../../data/models/course_model.dart';
 import '../widgets/loading_indecator.dart';
@@ -41,6 +42,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   CourseModel? courseModel;
   List<Session> session = [];
   bool enrollIn = false;
+  String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +148,21 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                       SizedBox(
                         height: height * 0.01,
                       ),
+                      courseModel!.ifEnrolled!
+                          ? Container()
+                          : Center(
+                              child: MyButtonWidget(
+                                  btnTxt: 'Enroll Now',
+                                  btnWidth: width * 0.85,
+                                  btnHeight: height * 0.06,
+                                  onPressed: () {
+                                    BlocProvider.of<SendRequestCubit>(context).sendRequest(courseModel!.course!.id.toString());
+                                  }),
+                            ),
+                      _buildRequestBloc(),
+                      SizedBox(
+                        height: height * 0.01,
+                      ),
                       Text(
                         'Sessions',
                         style: GoogleFonts.pacifico(color: blue, fontSize: 25),
@@ -192,21 +209,54 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                 SizedBox(
                   height: height * 0.02,
                 ),
-                courseModel!.ifEnrolled!
-                    ? Container()
-                    : Center(
-                        child: MyButtonWidget(
-                            btnTxt: 'Enroll',
-                            btnWidth: width * 0.85,
-                            btnHeight: height * 0.06,
-                            onPressed: () {}),
-                      ),
               ],
             ),
           );
         }
-        return Container();
+        return Scaffold(body: showLoadingIndicator());
       },
+    );
+  }
+
+  Widget _buildRequestBloc() {
+    return BlocListener<SendRequestCubit, SendRequestState>(
+      listenWhen: (previous, current) {
+        return previous != current;
+      },
+      listener: (context, state) {
+        if (state is RequestLoading){
+          showLoadingIndicator();
+        }
+        if (state is RequestSend){
+          message = state.message;
+          AwesomeDialog(
+            context: context,
+            headerAnimationLoop: false,
+            dialogType: DialogType.NO_HEADER,
+            title: 'RESULT',
+            desc: message,
+            btnOkOnPress: () {
+              debugPrint('OnClcik');
+            },
+            btnOkIcon: Icons.check_circle,
+          ).show();
+        }
+        if (state is RequestError){
+          message = state.message;
+          AwesomeDialog(
+            context: context,
+            headerAnimationLoop: false,
+            dialogType: DialogType.NO_HEADER,
+            title: 'RESULT',
+            desc: message,
+            btnOkOnPress: () {
+              debugPrint('OnClcik');
+            },
+            btnOkIcon: Icons.check_circle,
+          ).show();
+        }
+      },
+      child: Container(),
     );
   }
 }

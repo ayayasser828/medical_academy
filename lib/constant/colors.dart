@@ -20,10 +20,14 @@ Color blue = const Color(0xff26a9e1);
 Color red = Colors.red;
 Color gry = Colors.grey;
 
-const LinearGradient buttonGradient = LinearGradient(
+ LinearGradient buttonGradient = LinearGradient(
     colors:[
-      Color(0xff6CBBF5),
-      Color(0xff0041C2),
+      blue,
+     // const Color(0xff6CBBF5),
+      purple,
+      blueBlack
+      //const Color(0xff0041C2),
+
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight

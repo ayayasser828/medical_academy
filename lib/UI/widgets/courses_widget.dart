@@ -37,13 +37,14 @@ Widget coursesWidget(BuildContext context, String name, String description,
                   fit: BoxFit.fill,
                 ),
               ),
+              const SizedBox(height: 2,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     name + ' -- ',
-                    style: GoogleFonts.pacifico(color: blue, fontSize: 22),
+                    style: GoogleFonts.abhayaLibre(color: blue, fontSize: 22,fontWeight: FontWeight.bold),
                   ),
                   Expanded(
                     child: Text(
@@ -51,7 +52,7 @@ Widget coursesWidget(BuildContext context, String name, String description,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,
-                      style: GoogleFonts.pacifico(color: blue, fontSize: 22),
+                      style: GoogleFonts.abhayaLibre(color: blue, fontSize: 22,fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

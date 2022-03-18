@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:medical_academy/app_router.dart';
+import 'package:medical_academy/bussiness_logic/auth/delete_token_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constant/global_variables.dart';
 import 'helpers/dio_helper.dart';
@@ -9,6 +9,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   prefs =await SharedPreferences.getInstance();
   DioHelper.init();
+  DeleteTokenCubit.init();
   runApp(MyApp(appRouter: AppRouter(),));
 }
 

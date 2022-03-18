@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medical_academy/UI/widgets/courses_widget.dart';
+import 'package:medical_academy/bussiness_logic/auth/delete_token_cubit.dart';
 import 'package:medical_academy/bussiness_logic/courses/courses_cubit.dart';
 import 'package:medical_academy/constant/strings.dart';
 import 'package:medical_academy/data/models/all_courses_model.dart';
@@ -80,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Icons.logout,
                               color: blue,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              await BlocProvider.of<DeleteTokenCubit>(context).deleteProduct();
                               prefs.setBool("ISLOGGED", false);
                               Navigator.pushReplacementNamed(context, auth);
                             },

@@ -162,7 +162,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     height: height * 0.03,
                                   ),
                                   const Text(
-                                    'User Name',
+                                    'Phone Number',
                                     style: textFieldName,
                                   ),
                                   SizedBox(
@@ -170,8 +170,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                   MyTextFormFieldWidget(
                                       controller: userName,
-                                      type: TextInputType.name,
-                                      hint: 'user name',
+                                      type: TextInputType.phone,
+                                      hint: 'Phone Number',
                                       icon: const Icon(
                                         Icons.phone_outlined,
                                         color: Colors.grey,
@@ -263,6 +263,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController passwordConfirm = TextEditingController();
 
   final TextEditingController email = TextEditingController();
+
+  final TextEditingController year = TextEditingController();
 
   final GlobalKey<FormState> _registerFormKey = GlobalKey();
 
@@ -358,7 +360,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                         height: height * 0.02,
                                       ),
                                       const Text(
-                                        'Phone Number',
+                                        'Name in arabic',
                                         style: textFieldName,
                                       ),
                                       SizedBox(
@@ -366,7 +368,25 @@ class _AuthScreenState extends State<AuthScreen> {
                                       ),
                                       MyTextFormFieldWidget(
                                           type: TextInputType.name,
-                                          hint: 'Your phone number',
+                                          hint: 'Name in arabic',
+                                          controller: name,
+                                          icon: const Icon(
+                                            Icons.person,
+                                            color: Colors.grey,
+                                          )),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      const Text(
+                                        'Phone Number',
+                                        style: textFieldName,
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.01,
+                                      ),
+                                      MyTextFormFieldWidget(
+                                          type: TextInputType.phone,
+                                          hint: 'Your Phone Number',
                                           controller: phoneRegister,
                                           icon: const Icon(
                                             Icons.phone_outlined,
@@ -376,18 +396,18 @@ class _AuthScreenState extends State<AuthScreen> {
                                         height: height * 0.01,
                                       ),
                                       const Text(
-                                        'Name',
+                                        'Year',
                                         style: textFieldName,
                                       ),
                                       SizedBox(
                                         height: height * 0.01,
                                       ),
                                       MyTextFormFieldWidget(
-                                          type: TextInputType.name,
-                                          hint: 'Name',
-                                          controller: name,
+                                          type: TextInputType.emailAddress,
+                                          hint: 'Year',
+                                          controller: year,
                                           icon: const Icon(
-                                            Icons.phone_outlined,
+                                            Icons.calendar_today,
                                             color: Colors.grey,
                                           )),
                                       SizedBox(
@@ -402,7 +422,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                       ),
                                       MyTextFormFieldWidget(
                                           type: TextInputType.emailAddress,
-                                          hint: 'Your email',
+                                          hint: 'Email',
                                           controller: email,
                                           icon: const Icon(
                                             Icons.email,
@@ -512,13 +532,9 @@ class _AuthScreenState extends State<AuthScreen> {
             phoneRegister.text.toString(),
             passwordRegister.text.toString(),
             passwordConfirm.text.toString(),
+            year.text.toString(),
             email.text.toString(),
         );
-        name.clear();
-        passwordRegister.clear();
-        phoneRegister.clear();
-        passwordConfirm.clear();
-        email.clear();
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

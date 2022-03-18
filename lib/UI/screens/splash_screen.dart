@@ -1,7 +1,9 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medical_academy/bussiness_logic/auth/delete_token_cubit.dart';
+import 'package:medical_academy/constant/global_variables.dart';
 import 'package:medical_academy/constant/strings.dart';
 
 import '../../controls/control_flow.dart';
@@ -16,11 +18,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    print(prefs.getString('token'));
     Timer(const Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const ControlFlow()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                    create: (context) => DeleteTokenCubit(),
+                    child: const ControlFlow(),
+                  )));
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;

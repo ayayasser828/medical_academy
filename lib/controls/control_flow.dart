@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bussiness_logic/auth/delete_token_cubit.dart';
 import '../constant/global_variables.dart';
 import '../constant/strings.dart';
 
@@ -14,7 +16,6 @@ class ControlFlow extends StatefulWidget {
 class _ControlFlowState extends State<ControlFlow> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer.run(() {
       isLogged
@@ -25,6 +26,9 @@ class _ControlFlowState extends State<ControlFlow> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLogged == false || prefs.getString('token') == null){
+      BlocProvider.of<DeleteTokenCubit>(context).deleteProduct();
+    }
     return Container();
   }
 }

@@ -20,7 +20,7 @@ class RegisterSuccessModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "user": user?.toJson(),
+    "user": user!.toJson(),
   };
 }
 
@@ -28,7 +28,8 @@ class User {
   User({
     this.name,
     this.email,
-    this.status,
+    this.mobile,
+    this.year,
     this.updatedAt,
     this.createdAt,
     this.id,
@@ -36,7 +37,8 @@ class User {
 
   String? name;
   String? email;
-  String? status;
+  String? mobile;
+  String? year;
   DateTime? updatedAt;
   DateTime? createdAt;
   int? id;
@@ -44,7 +46,8 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => User(
     name: json["name"],
     email: json["email"],
-    status: json["status"],
+    mobile: json["mobile"],
+    year: json["year"],
     updatedAt: DateTime.parse(json["updated_at"]),
     createdAt: DateTime.parse(json["created_at"]),
     id: json["id"],
@@ -53,9 +56,10 @@ class User {
   Map<String, dynamic> toJson() => {
     "name": name,
     "email": email,
-    "status": status,
-    "updated_at": updatedAt?.toIso8601String(),
-    "created_at": createdAt?.toIso8601String(),
+    "mobile": mobile,
+    "year": year,
+    "updated_at": updatedAt!.toIso8601String(),
+    "created_at": createdAt!.toIso8601String(),
     "id": id,
   };
 }

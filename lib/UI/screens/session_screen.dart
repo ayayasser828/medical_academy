@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenshot_callback/flutter_screenshot_callback.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:medical_academy/data/models/session_model.dart';
 import 'package:video_player/video_player.dart';
@@ -22,18 +23,27 @@ class SessionScreen extends StatefulWidget {
   State<SessionScreen> createState() => _SessionScreenState();
 }
 
-class _SessionScreenState extends State<SessionScreen> {
+class _SessionScreenState extends State<SessionScreen> implements IScreenshotCallback{
   VideoPlayerController? _controller;
   YoutubePlayerController? controller;
+  ScreenshotCallback? _screenshotCallback;
+  late String _imagePath = 'Unknown';
 
   Future<void> secureScreen() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
+  void initCallback(){
+    _screenshotCallback = ScreenshotCallback();
+    _screenshotCallback!.startScreenshot();
+    _screenshotCallback!.setInterfaceScreenshotCallback(this);
   }
 
   @override
   void initState() {
     secureScreen();
     super.initState();
+    initCallback();
     BlocProvider.of<CoursesCubit>(context)
         .getSession(widget.courseID, widget.sessionID);
     _controller = VideoPlayerController.network(
@@ -65,6 +75,7 @@ class _SessionScreenState extends State<SessionScreen> {
   Future<void> dispose() async {
     super.dispose();
     _controller!.dispose();
+    _screenshotCallback!.stopScreenshot();
     await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
@@ -105,9 +116,9 @@ class _SessionScreenState extends State<SessionScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: height*0.8,
+                      height: height*0.7,
                       width: width,
-                      child: const VimeoPlayer(videoId: '687761777',),
+                      child: VimeoPlayer(videoId: sessionModel!.session!.sessionLink!.toString(),),
                     ),
                     // SizedBox(
                     //   height: height*0.4,
@@ -151,64 +162,24 @@ class _SessionScreenState extends State<SessionScreen> {
                     //     ],
                     //   ),
                     // ),
+                    SizedBox(
+                      height: height * 0.01,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: height * 0.01,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Description : ',
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 16),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: sessionModel!.session!.description
-                                      .toString(),
-                                  style: TextStyle(color: blue, fontSize: 16),
-                                ),
-                              ],
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Description : ',
+                          style: const TextStyle(
+                              color: Colors.grey, fontSize: 16),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: sessionModel!.session!.description
+                                  .toString(),
+                              style: TextStyle(color: blue, fontSize: 16),
                             ),
-                          ),
-                          SizedBox(
-                            height: height * 0.01,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Created at : ',
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 16),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: sessionModel!.session!.createdAt
-                                      .toString(),
-                                  style: TextStyle(color: blue, fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: height * 0.01,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Updated at : ',
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 16),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: sessionModel!.session!.updatedAt
-                                      .toString(),
-                                  style: TextStyle(color: blue, fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -220,5 +191,20 @@ class _SessionScreenState extends State<SessionScreen> {
         return Container();
       },
     );
+  }
+
+  @override
+  deniedPermission() {
+    // TODO: implement deniedPermission
+    print('screen');
+    throw UnimplementedError();
+  }
+
+  @override
+  screenshotCallback(String data) {
+    setState(() {
+      _imagePath = data;
+    });
+    throw UnimplementedError();
   }
 }

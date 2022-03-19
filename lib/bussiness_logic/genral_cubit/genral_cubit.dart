@@ -40,4 +40,10 @@ class GeneralCubit extends Cubit<GeneralState> {
     );
     emit(PasswordVisibility());
   }
+  String dropDownValue = 'first year';
+
+  void dropDown(String v) {
+    dropDownValue = v;
+    emit(DropDownMenu());
+  }
 }

@@ -1,10 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:medical_academy/bussiness_logic/auth/auth_cubit.dart';
-
+import 'package:platform_device_id/platform_device_id.dart';
 import '../../RegExp/validators.dart';
 import '../../bussiness_logic/genral_cubit/genral_cubit.dart';
 import '../../constant/colors.dart';
@@ -24,8 +24,32 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController userName = TextEditingController();
-
   final TextEditingController password = TextEditingController();
+  String? _deviceId;
+
+  List<String> items = ['first year', 'second year', 'third year','fourth year','fifth year'];
+
+  String? selectYear;
+
+  Future<void> initPlatformState() async {
+    String? deviceId;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      deviceId = await PlatformDeviceId.getDeviceId;
+    } on PlatformException {
+      deviceId = 'Failed to get deviceId.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _deviceId = deviceId;
+      print("deviceId->$_deviceId");
+    });
+  }
 
   Future<void> secureScreen() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -34,6 +58,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void initState() {
     secureScreen();
+    initPlatformState();
     super.initState();
   }
 
@@ -63,6 +88,7 @@ class _AuthScreenState extends State<AuthScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //Text('Device ID : $_deviceId'),
                 MyButtonWidget(
                     btnTxt: 'Login',
                     btnWidth: width * 0.8,
@@ -243,7 +269,7 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         // Navigator.pop(context);
         BlocProvider.of<AuthCubit>(context)
-            .login(userName.text.toString(), password.text.toString());
+            .login(userName.text.toString(), password.text.toString(),_deviceId.toString());
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -402,14 +428,43 @@ class _AuthScreenState extends State<AuthScreen> {
                                       SizedBox(
                                         height: height * 0.01,
                                       ),
-                                      MyTextFormFieldWidget(
-                                          type: TextInputType.emailAddress,
-                                          hint: 'Year',
-                                          controller: year,
-                                          icon: const Icon(
-                                            Icons.calendar_today,
-                                            color: Colors.grey,
-                                          )),
+                                      Container(
+                                        width: width * 0.33,
+                                        height: height * 0.05,
+                                        decoration: BoxDecoration(
+                                            color: white,
+                                            border: Border.all(color: grey),
+                                            borderRadius: BorderRadius.circular(5)),
+                                        child: Center(
+                                          child: DropdownButton(
+                                            value: BlocProvider.of<GeneralCubit>(
+                                                context)
+                                                .dropDownValue,
+                                            icon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: grey,
+                                              size: 30,
+                                            ),
+                                            items: items.map((String items) {
+                                              return DropdownMenuItem(
+                                                  value: items,
+                                                  child: Text(
+                                                    items,
+                                                    style: textFieldName,
+                                                  ));
+                                            }).toList(),
+                                            onChanged: (String? v) {
+                                              BlocProvider.of<GeneralCubit>(context)
+                                                  .dropDown(v!);
+                                              setState(() {
+                                                selectYear = v;
+                                              });
+                                            },
+                                            elevation: 0,
+                                            underline: const SizedBox.shrink(),
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(
                                         height: height * 0.01,
                                       ),
@@ -532,8 +587,9 @@ class _AuthScreenState extends State<AuthScreen> {
             phoneRegister.text.toString(),
             passwordRegister.text.toString(),
             passwordConfirm.text.toString(),
-            year.text.toString(),
+            selectYear.toString(),
             email.text.toString(),
+            _deviceId.toString()
         );
       }
     } else {

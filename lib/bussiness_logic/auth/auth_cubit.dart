@@ -59,7 +59,8 @@ class AuthCubit extends Cubit<AuthState> {
       if (value.statusCode! == 401 || value.statusCode! == 403) {
         errorModel = LoginErrorModel.fromJson(value.data);
         emit(LoginError(message: errorModel!.message!));
-      } else {
+      }
+      if (value.statusCode == 200) {
         loginModel = LoginModel.fromJson(value.data);
         emit(LoginSuccess());
         prefs.setString('token', loginModel!.token!);
@@ -68,6 +69,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
     }).catchError((error) {
       print(error.toString());
+      emit(LoginError(message: error.toString()));
     });
   }
 }

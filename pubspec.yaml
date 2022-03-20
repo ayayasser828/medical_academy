@@ -49,6 +49,12 @@ dependencies:
   fullscreen: ^1.0.3
   flutter_screenshot_callback: ^0.0.8
   platform_device_id: ^1.0.1
+  flutter_launcher_icons: ^0.9.2
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/bg.jpeg"
 
 dev_dependencies:
   flutter_test:

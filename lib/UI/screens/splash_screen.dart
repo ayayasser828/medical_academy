@@ -20,13 +20,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     print(prefs.getString('token'));
     Timer(const Duration(seconds: 3), () {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (_) => BlocProvider(
                     create: (context) => DeleteTokenCubit(),
                     child: const ControlFlow(),
-                  )));
+                  )),
+            (Route<dynamic> route) => false,
+      );
     });
     super.initState();
   }

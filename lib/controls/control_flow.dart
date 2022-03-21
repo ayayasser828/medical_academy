@@ -19,8 +19,8 @@ class _ControlFlowState extends State<ControlFlow> {
     super.initState();
     Timer.run(() {
       isLogged
-          ? Navigator.pushNamed(context, home)
-          : Navigator.pushNamed(context, auth);
+          ? Navigator.pushNamedAndRemoveUntil(context, home,(route) => false)
+          : Navigator.pushNamedAndRemoveUntil(context, auth,(route) => false);
     });
   }
 

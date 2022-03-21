@@ -139,7 +139,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         showLoadingIndicator();
                       }
                       if (state is LoginSuccess) {
-                        Navigator.pushReplacementNamed(context, home);
+                        Navigator.pushNamedAndRemoveUntil(context, home,(route) => false);
                       }
                       if (state is LoginError) {
                         AwesomeDialog(
